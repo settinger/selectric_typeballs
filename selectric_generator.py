@@ -10,15 +10,63 @@ if __name__ == "__main__":
     glyphs = []
     
     with open("uppercase.txt", "r", encoding="utf-8") as uppercaseText:
-        for row, line in enumerate(uppercaseText.readlines()[0:4]):
-            for column, glyph in enumerate(line.strip()[0:11]):
+        rows = uppercaseText.readlines()[0:4]
+        rows = [x.strip("\r\n") for x in rows]
+        if len(rows[0]) != 12:
+            print("First keyboard row should have 12 characters!")
+            raise
+        elif len(rows[1]) != 11:
+            print("Second keyboard row should have 11 characters!")
+            raise
+        elif len(rows[2]) != 11:
+            print("Third keyboard row should have 11 characters!")
+            raise
+        elif len(rows[3]) != 10:
+            print("Fourth keyboard row should have 10 characters!")
+
+        a = rows[0]
+        b = rows[1]
+        c = rows[2]
+        d = rows[3]
+        
+        ballOrder = [a[0]+a[2]+a[6]+a[7]+a[3]+d[0]+a[1]+a[4]+a[5]+a[9]+a[8],
+                     d[1]+b[6]+c[2]+d[2]+c[8]+b[4]+d[5]+b[2]+c[7]+c[5]+d[4],
+                     d[6]+d[3]+b[3]+c[0]+b[8]+b[10]+d[8]+c[10]+b[7]+c[1]+b[1],
+                     c[4]+c[3]+c[9]+d[7]+d[9]+c[6]+a[11]+b[0]+b[9]+b[5]+a[10]]
+        
+        for row, line in enumerate(ballOrder):
+            for column, glyph in enumerate(line):
                 glyphs += [(row, column, 1, glyph)]
     
     with open("lowercase.txt", "r", encoding="utf-8") as lowercaseText:
-        for row, line in enumerate(lowercaseText.readlines()[0:4]):
-            for column, glyph in enumerate(line.strip()[0:11]):
-                glyphs += [(row, column, 0, glyph)]
+        rows = lowercaseText.readlines()[0:4]
+        rows = [x.strip("\r\n") for x in rows]
+        if len(rows[0]) != 12:
+            print("First keyboard row should have 12 characters!")
+            raise
+        elif len(rows[1]) != 11:
+            print("Second keyboard row should have 11 characters!")
+            raise
+        elif len(rows[2]) != 11:
+            print("Third keyboard row should have 11 characters!")
+            raise
+        elif len(rows[3]) != 10:
+            print("Fourth keyboard row should have 10 characters!")
 
+        a = rows[0]
+        b = rows[1]
+        c = rows[2]
+        d = rows[3]
+        
+        ballOrder = [a[0]+a[2]+a[6]+a[7]+a[3]+d[0]+a[1]+a[4]+a[5]+a[9]+a[8],
+                     d[1]+b[6]+c[2]+d[2]+c[8]+b[4]+d[5]+b[2]+c[7]+c[5]+d[4],
+                     d[6]+d[3]+b[3]+c[0]+b[8]+b[10]+d[8]+c[10]+b[7]+c[1]+b[1],
+                     c[4]+c[3]+c[9]+d[7]+d[9]+c[6]+a[11]+b[0]+b[9]+b[5]+a[10]]
+        
+        for row, line in enumerate(ballOrder):
+            for column, glyph in enumerate(line):
+                glyphs += [(row, column, 0, glyph)]
+                
     # Define some values we'll use throughout this
     # Letters extend out 0.6875" from the center of the typeball
     # The ball itself has a radius of around 0.6625"
