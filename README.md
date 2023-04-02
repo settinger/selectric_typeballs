@@ -1,15 +1,12 @@
 # How to make your own Selectric Typeballs
-## March 31, 2023
 
-# this may get pretty complex fast, and i won't have time to improve the documentation for a while sorry everyone
+## March 31, 2023
 
 # Remind me to put some of these up for sale through Shapeways, for folks who don't want to print them themeslves!
 
 The [IBM Selectric typewriter](https://www.ibm.com/ibm/history/ibm100/us/en/icons/selectric/) uses an instantly-recognizable "ball" of type instead of a fanned-out array of arms like a conventional typewriter. These typeballs could be swapped out, meaning you could easily write documents with different fonts, font sizes, special characters, or different writing systems altogether.
 
 IBM and some other vendors made lots of different typeballs, but most of them are 40-50 years old and no one has been making new typeballs for a long time. 3D printing is a natural fit for making new typeballs, but most printers still don't have the ability to produce the sharp details necessary on a sufficiently-resilient material. So it's understandable that no one tried to make a really polished 3D-printable typeball. Until now, that is!
-
-## TODO: EXPLAIN HOW THE GEOMETRY WORKS, BECAUSE I'M REALLY QUITE PROUD OF IT
 
 ## How to use the code
 Things you need before getting started:
@@ -35,9 +32,49 @@ zxcvbnm,./
 ```
 1. Run `selectric_generator.py`. On my machine, each character takes between 1 and 30 seconds to generate, depending on their complexity. So 88 characters will take a while, be patient!
 
-## Some extra things
+## Acknowledgements
 
 The blank typeball is based on [1944GPW's typeball on Thingiverse](https://www.thingiverse.com/thing:4126040), which is released under a Creative Commons-Attribution license. I suspect that my project wouldn't exist if it weren't for this one. I had to change most of their typeball dimensions, and there are major issues with the way their characters are generated, but I sure as heck would have made those same errors myself, so I'm infinitely grateful for the people before me who documented their processes!
+
+Another project that deserves a lot of credit is [The Sincerity Machine by Jesse England](jesseengland.net/project/sincerity-machine-the-comic-sans-typewriter/). Jesse is a delight and a constant source of creative inspiration for me, and it brings me great joy to watch this project evolve with him.
+
+## EXPLAINING HOW THE GEOMETRY WORKS, BECAUSE I'M REALLY QUITE PROUD OF IT (BUT YOU CAN SKIP THIS SECTION, IT WON'T HURT MY FEELINGS)
+
+![A Meshlab render of the octothorpe symbol with lofted edges](img/loft.png)
+
+Getting those nice lofted edges on each glyph was not easy! It was a great mental exercise for me, and I'm sure there are lots of other ways to do it. I'd be very curious to hear how you would have approached it!!
+
+The [OpenSCAD Typeball by 1944GPW](https://www.thingiverse.com/thing:4126040) attempts to loft the shapes by scaling the letterform. This was my first thought, as well, but since the letters scale around a specific point, it means the lofted sides won't all spread out evenly. Instead you get unhelpful overhangs:
+
+![An OpenSCAD render of the letter "N" with steeply slanted edges that would not print well](img/badloft.png)
+
+Instead of a scaled extrusion, we need the base to be a puffed-out offset version of the original letterform. It's not easy to do that in an automated fashion, especially if there are small holes that will close up (like in the middle of the # character).
+
+I'm quite happy with the method I came up with! First, a command-line script extrudes the letter in OpenSCAD and exports an STL (I might try to switch to Cadquery, so I can have a pure-python solution, but that's for later).
+
+![](img/demo1.png)
+
+It's important that all the vertices are on either the top face of the letter or the bottom face of the letter; there aren't any vertices mid-way along the extrusion. That makes the next step possible: I grab all the vertices on the bottom face and displace them by their normal vectors. This means the vertex will always be pushed *out* away from the body of the STL.
+
+![](img/pvgm1.png)
+![](img/pvgm2.png)
+
+This is done automatically using a [pymeshlab script](https://pypi.org/project/pymeshlab/). The script also cleans up the resulting file (which is almost certainly nonmanifold at this point) and cuts out a shallow "scoop" to match the shape of the platen on the top of the letter.
+
+Is this approach perfect? Not at all. In fact, if you look at the underside of each letter, you'll see a lot of topological scars from attempts to re-mesh this self-intersecting shape. But it turns out to be pretty printable, so I'm content with it for now.
+
+![](img/loft_nonmani.png)
+
+One issue that bugged me for quite a while was how to deal with straight edges and sharp corners. Displacing the vertices by their normal vectors leads to some odd issues when the vertices are far away from each other, and have such sharp angles!
+
+![](img/corners1.png)
+
+The solution that I found was simple and elegant: by offsetting and then undoing that offset in OpenSCAD, I can put tiny tiny rounded fillets on each corner of the 2d profile, so the sharp corners can spread out in a smoother fashion.
+
+![](img/corners2.png)
+
+
+# Extra thoughts
 
 To make a typeball that sticks close-ish to the standard Cherokee keyboard layout:
 ```
