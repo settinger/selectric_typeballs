@@ -79,6 +79,8 @@ The solution that I found was simple and elegant: by offsetting and then undoing
 
 # Extra thoughts
 
+To attach the typeball to the typewriter, you will need a clip of some variety. I am using [this clip by Dave Hayden](https://www.printables.com/model/416841-selectric-ball-clip).
+
 To make a typeball that sticks close-ish to the standard Cherokee keyboard layout:
 ```
 uppercase.txt
