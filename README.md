@@ -2,8 +2,6 @@
 
 ## March 31, 2023
 
-# Remind me to put some of these up for sale through Shapeways, for folks who don't want to print them themeslves!
-
 ![A 3D printed typeball for the IBM Selectric. The font is Comic Sans. There is ink on most of the letters.](img/typeball.jpg)
 ![A sheet of lined paper in a typewriter with several lines of Cherokee text; the 3d printed typeball that made the text is visible in the lower left.](img/cherokee.jpg)
 
@@ -13,26 +11,12 @@ IBM and some other vendors made lots of different typeballs, but most of them ar
 
 ## How to use the code
 Things you need before getting started:
-* OpenSCAD (This will possibly be replaced with CadQuery in a later revision, please be aware! Until then I only know how to run this program on Windows.)
+* OpenSCAD
 * A Python installation with the [pymeshlab](https://pypi.org/project/pymeshlab/) package
 
-1. Open `oneletter.scad` and change lines 10 and 11, the ones that specify the font height (in millimeters) and the font name/style for OpenSCAD to use.
+1. Open `oneletter.scad` and change lines 11 and 12, the ones that specify the font height (in millimeters) and the font name/style for OpenSCAD to use.
 1. Open `selectric_generator.py` and change line 5, the one that says `PATH TO OPENSCAD = r"{something}"` so that it points to your installation of `openscad.com` (not `openscad.exe`! They are in the same folder probably, but the `.com` is meant to be run from command line, which is what we'll be doing.
-1. If you want to change the keyboard layout, edit `uppercase.txt` and `lowercase.txt`. Each .txt file has four rows, representing the characters in order on the Selectric keyboard. For example, for a standard QWERTY keyboard layout the files should look like:
-```
-uppercase.txt
-!@#$%¢&*()_+
-QWERTYUIOP¼
-ASDFGHJKL:"
-ZXCVBNM,.?
-```
-```
-lowercase.txt
-1234567890-=
-qwertyuiop½
-asdfghjkl;'
-zxcvbnm,./
-```
+1. If you want to change the characters on the balls, edit `glyph_tables.py`. This contains a multi-dimensional array of the characters as they are arrayed on the typeball, *not as they are laid out on the keyboard*. If you want to use a different character set than the standard Latin, you'll have to find a correspondence between the new set and your preexisting keyboard layout. Sorry this part may be extra-confusing.
 1. Run `selectric_generator.py`. On my machine, each character takes between 1 and 30 seconds to generate, depending on their complexity. So 88 characters will take a while, be patient!
 
 ## Acknowledgements
@@ -45,57 +29,30 @@ Another project that deserves a lot of credit is [The Sincerity Machine by Jesse
 
 ![A Meshlab render of the octothorpe symbol with lofted edges](img/loft.png)
 
-Getting those nice lofted edges on each glyph was not easy! It was a great mental exercise for me, and I'm sure there are lots of other ways to do it. I'd be very curious to hear how you would have approached it!!
+Getting those nice lofted edges on each glyph was not easy! I came up with a rather elaborate way that worked pretty well, but then got an excellent suggestion from Kris Slyka that works so, so much better. This is truly a community effort. I'd be very curious to hear how you would have approached it!!
 
 The [OpenSCAD Typeball by 1944GPW](https://www.thingiverse.com/thing:4126040) attempts to loft the shapes by scaling the letterform. This was my first thought, as well, but since the letters scale around a specific point, it means the lofted sides won't all spread out evenly. Instead you get unhelpful overhangs:
 
 ![An OpenSCAD render of the letter "N" with steeply slanted edges that would not print well](img/badloft.png)
 
-Instead of a scaled extrusion, we need the base to be a puffed-out offset version of the original letterform. It's not easy to do that in an automated fashion, especially if there are small holes that will close up (like in the middle of the # character).
-
-I'm quite happy with the method I came up with! First, a command-line script extrudes the letter in OpenSCAD and exports an STL (I might try to switch to Cadquery, so I can have a pure-python solution, but that's for later).
-
-![](img/demo1.png)
-
-It's important that all the vertices are on either the top face of the letter or the bottom face of the letter; there aren't any vertices mid-way along the extrusion. That makes the next step possible: I grab all the vertices on the bottom face and displace them by their normal vectors. This means the vertex will always be pushed *out* away from the body of the STL.
+Instead of a scaled extrusion, we need the base to be a puffed-out offset version of the original letterform. It's not trivial to do that in an automated fashion, especially if there are small holes that will close up (like in the middle of the # character). The method I came up with uses a command-line script to extrude the letter in OpenSCAD and then displace one layer of vertices by their normal vectors. This means the vertex will always be pushed *out* away from the body of the STL.
 
 ![](img/pvgm1.png)
 ![](img/pvgm2.png)
 
-This is done automatically using a [pymeshlab script](https://pypi.org/project/pymeshlab/). The script also cleans up the resulting file (which is almost certainly nonmanifold at this point) and cuts out a shallow "scoop" to match the shape of the platen on the top of the letter.
-
-Is this approach perfect? Not at all. In fact, if you look at the underside of each letter, you'll see a lot of topological scars from attempts to re-mesh this self-intersecting shape. But it turns out to be pretty printable, so I'm content with it for now.
+If you look at the underside of each letter, you'll see a that this method leaves a lot of topological scars from attempts to re-mesh this self-intersecting shape. But it turned out to be pretty printable, so I released the project with this approach.
 
 ![](img/loft_nonmani.png)
 
-One issue that bugged me for quite a while was how to deal with straight edges and sharp corners. Displacing the vertices by their normal vectors leads to some odd issues when the vertices are far away from each other, and have such sharp angles!
-
-![](img/corners1.png)
-
-The solution that I found was simple and elegant: by offsetting and then undoing that offset in OpenSCAD, I can put tiny tiny rounded fillets on each corner of the 2d profile, so the sharp corners can spread out in a smoother fashion.
-
-![](img/corners2.png)
-
+After seeing the discussion about typeballs on Mastodon, Kris Slyka approached me to suggest using OpenSCAD's `minkowski()` function. It has a reputation for being agonizingly slow, and trying to generate all the glyphs at once would exhaust my PC's memory, but with the batch-script, one-letter-at-a-time method, it can work! I highly recommend getting a recent build of OpenSCAD nightly; the fast-csg setting makes `minkowski()` operations so, so much faster.
 
 # Extra thoughts
 
-To make a typeball that sticks close-ish to the standard Cherokee keyboard layout:
-```
-uppercase.txt
-ᎱᏇᏧᎰᎹᏝᏡᎺᎶᏤᎼᎽ
-ᏆᏫᏣᏏᏘᏲᎭᏱᏬᏪᏑ
-ᏌᏎᏐᏈᏥᎲᎫᎧᎮᏠᏀ
-ᏃᏭᏟᏞᏰᎻᎷᏢᎴᏉ
-```
-```
-lowercase.txt
-ᏊᏮᏩᏙᏦᏜᏋᏖᏒᏄᎿᏳ
-ᎪᎳᎡᏛᏔᏯᎤᎢᎣᏁᏕ
-ᎠᏍᏗᎩᎦᎯᏚᎸᎵᏨ'
-ᎬᏴᏓᎥᎨᎾᏅ,.Ꮒ
-```
+[I put some typeballs on Printables!](https://www.printables.com/search/models?q=tag:typeball%20@settinger_263029) They are also available on Shapeways (links in the Printables descriptions) if you don't want to print them yourself.
 
-How do you set the horizontal spacing between keypresses on a Selectric? There's got to be a way, right? Knowing the exact horizontal advance between keystrokes is critical if I'm going to get a Mongolian typeball to work. That would also require me to acquire a right-to-left writing typewriter; can all Selectrics change writing direction?
+To affix the typeball to the typewriter, you will need a bent wire or a small clip [such as this one from Dave Hayden](https://www.printables.com/model/416841-selectric-ball-clip). Thank you Dave for encouraging me to pick up the Selectric project again!
+
+I had been testing on a not-fully-functional Selectric I, which I think was set to 12 characters per inch. Knowing characters per inch is important for joined/cursive scripts like Mongolian. It would really help if I knew how to change the writing direction, I know some Selectrics had an RTL/LTR switch...
 
 Other right-to-left scripts to try: Thaana, N'ko
 
