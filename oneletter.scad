@@ -28,5 +28,5 @@ minkowski() {
     translate([0, 0.5, 0]) rotate([90, 0, 0]) linear_extrude(.55) translate([0, -fontSize/2, 0]) text(glyph, size=fontSize, halign="center", font=myFont);
     translate([0, platenRadius, 0]) rotate([0, 90, 0]) cylinder(h=20, r=platenRadius, $fn=360, center=true);
   }
-  rotate([90, 0, 0]) cylinder(h=1, r1=0, r2=.6);
+  rotate([90, 0, 0]) cylinder(h=1, r1=0, r2=.9);
 }
