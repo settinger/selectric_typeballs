@@ -36,8 +36,8 @@ SKIRT_HEIGHT = 4.57;
 TOOTH_PEAK_OFFSET_FROM_CENTRE = 6.1; // Lateral offset of the tilt ring detent pawl
 
 // Parameters for the centre boss that goes onto tilt ring spigot (upper ball socket)
-BOSS_INNER_RAD = 4.30 + UPPER_BALL_SOCKET_TOLERANCE;   //20190903  4.45;    // d=8.5
-BOSS_OUTER_RAD = 5.3; //20190903    5.5;
+BOSS_INNER_RAD = 4.60 + UPPER_BALL_SOCKET_TOLERANCE;   //20190903  4.45;    // d=8.5
+BOSS_OUTER_RAD = 5.65; //20190903    5.5;
 BOSS_HEIGHT = 8.32; //20190914    8.69;
 SLOT_ANGLE = -45;        //APPROXIMATION. TODO CHECK
 SLOT_WIDTH = 1.9; //20190904    2;         //APPROXIMATION. TODO CHECK
@@ -220,9 +220,32 @@ module CentreBoss()
 // The full-length slot in the tilt ring boss at the half past one o'clock position
 module Slot()
 {
+    // big slot
     rotate([0, 0, SLOT_ANGLE])
         translate([0, -SLOT_WIDTH/2, 0])
             cube([SLOT_DEPTH + BOSS_INNER_RAD, SLOT_WIDTH, 40]);
+
+    // 5 more minor slots, to reduce friction when inserting or removing the typeball.
+    // these slots are present on some official IBM balls, but not most. Perhaps it was a later refinement.
+    rotate([0, 0, SLOT_ANGLE + 60])
+        translate([0, -SLOT_WIDTH/4, 0])
+            cube([SLOT_DEPTH + BOSS_INNER_RAD, SLOT_WIDTH / 2, 40]);
+
+    rotate([0, 0, SLOT_ANGLE + 120])
+        translate([0, -SLOT_WIDTH/4, 0])
+            cube([SLOT_DEPTH + BOSS_INNER_RAD, SLOT_WIDTH / 2, 40]);
+
+    rotate([0, 0, SLOT_ANGLE + 180])
+        translate([0, -SLOT_WIDTH/4, 0])
+            cube([SLOT_DEPTH + BOSS_INNER_RAD, SLOT_WIDTH / 2, 40]);
+
+    rotate([0, 0, SLOT_ANGLE + 240])
+        translate([0, -SLOT_WIDTH/4, 0])
+            cube([SLOT_DEPTH + BOSS_INNER_RAD, SLOT_WIDTH / 2, 40]);
+
+    rotate([0, 0, SLOT_ANGLE + 300])
+        translate([0, -SLOT_WIDTH/4, 0])
+            cube([SLOT_DEPTH + BOSS_INNER_RAD, SLOT_WIDTH / 2, 40]);
 }
 
 // The partial-length slot in the tilt ring boss at the half past seven o'clock position

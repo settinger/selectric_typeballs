@@ -17,6 +17,13 @@ The [IBM Selectric typewriter](https://www.ibm.com/ibm/history/ibm100/us/en/icon
 
 IBM and some other vendors made lots of different typeballs, but most of them are 40-50 years old and no one has been making new typeballs for a long time. 3D printing is a natural fit for making new typeballs, but most printers still don't have the ability to produce the sharp details necessary on a sufficiently-resilient material. So it's understandable that no one made a really functional 3D-printable typeball. Until now, that is!
 
+## Warning
+Please keep in mind that the spindle that the typeball sits on is fragile. Do not force a typeball onto the spindle if it does not fit, and do not attempt to salvage a print by shaving it down. The typeball can become stuck on the delicate spindle, damaging your vintage typewriter. Similarly, do not use a typeball if it is too loose and cannot be attached securely. It could fly off and damage its surroundings.
+
+You may wish to use a small amount of sewing machine oil on the inside of your print, to help it as it spins, and to catch any resin dust that is created by the printed ball rubbing against the spindle mount.
+
+Any damage incurred through the use of this software and its resulting typeballs are not our liability.
+
 ## How to use the code
 Things you need before getting started:
 * OpenSCAD
