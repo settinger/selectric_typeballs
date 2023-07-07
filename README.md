@@ -5,6 +5,14 @@
 ![A 3D printed typeball for the IBM Selectric. The font is Comic Sans. There is ink on most of the letters.](img/typeball.jpg)
 ![A sheet of lined paper in a typewriter with several lines of Cherokee text; the 3d printed typeball that made the text is visible in the lower left.](img/cherokee.jpg)
 
+# Update: July 7 2023: YOU PROBABLY SHOULDN'T PRINT THIS!
+
+Update, July 7 2023: [Dave Hayden](https://selectricrescue.org/) took the resin-printed typeball concept and [improved on it greatly](https://selectricrescue.org/balls/SelectricElement88.scad). I'm extremely grateful that he took on all the hard work of iteratively going through and dialing in the perfect values to make a functional ball, and I'm pleased to think I contributed in some way to his achievements.
+
+The original README continues below.
+
+-----------------------------------------
+
 The [IBM Selectric typewriter](https://www.ibm.com/ibm/history/ibm100/us/en/icons/selectric/) uses an instantly-recognizable "ball" of type instead of a fanned-out array of arms like a conventional typewriter. These typeballs could be swapped out, meaning you could easily write documents with different fonts, font sizes, special characters, or different writing systems altogether.
 
 IBM and some other vendors made lots of different typeballs, but most of them are 40-50 years old and no one has been making new typeballs for a long time. 3D printing is a natural fit for making new typeballs, but most printers still don't have the ability to produce the sharp details necessary on a sufficiently-resilient material. So it's understandable that no one made a really functional 3D-printable typeball. Until now, that is!
